@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=4 format=3 uid="uid://d3lg7vtet5t6a"]
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://d3lg7vtet5t6a"]
 
 [ext_resource type="FontFile" uid="uid://d1qlac6vgr01m" path="res://fonts/OTF/dogica.otf" id="1_m5ypl"]
 
@@ -30,6 +30,8 @@ corner_radius_bottom_left = 5
 expand_margin_top = 10.0
 expand_margin_bottom = 10.0
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lwv2v"]
+
 [resource]
 default_font = ExtResource("1_m5ypl")
 default_font_size = 10
@@ -38,3 +40,4 @@ Button/styles/focus = SubResource("StyleBoxFlat_ia1tu")
 Button/styles/hover = SubResource("StyleBoxFlat_3po7c")
 Button/styles/normal = SubResource("StyleBoxFlat_ia1tu")
 Button/styles/pressed = SubResource("StyleBoxFlat_ia1tu")
+PanelContainer/styles/panel = SubResource("StyleBoxEmpty_lwv2v")

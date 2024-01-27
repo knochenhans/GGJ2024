@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cgqmrvepf51n7"]
 
 [ext_resource type="PackedScene" uid="uid://dj7wd2f1yx3pp" path="res://Object.tscn" id="1_s2qag"]
-[ext_resource type="Texture2D" uid="uid://bpfj8c7ahnt7n" path="res://images/crate.png" id="2_raptx"]
+[ext_resource type="Texture2D" uid="uid://bpfj8c7ahnt7n" path="res://images/Crate.png" id="2_raptx"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ocx8y"]
 animations = [{

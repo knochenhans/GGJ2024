@@ -17,7 +17,6 @@ public partial class Game : Scene
     AudioStream[] audioStreams = new AudioStream[6];
 
     Character Character { get; set; }
-
     Interface Interface { get; set; }
 
     int characterLastLife = 0;
@@ -54,6 +53,8 @@ public partial class Game : Scene
 
     Godot.Collections.Dictionary<string, int> AvailableObject = new();
 
+    Tilemap TileMap { get; set; }
+
     public Game()
     {
         for (int i = 0; i < audioStreams.Length; i++)
@@ -78,13 +79,17 @@ public partial class Game : Scene
         LaughterSoundsNode = GetNode<AudioStreamPlayer>("LaughterSounds");
         LaughterSoundsDefaultVolume = LaughterSoundsNode.VolumeDb;
 
-        AvailableObject.Add("Sign", 3);
+        AvailableObject.Add("Sign", 5);
         AvailableObject.Add("Crate", 3);
 
         foreach (var item in AvailableObject)
         {
-            GD.Print(item.Key, item.Value);
+            Interface.AddObjectPanel(item.Key, (Texture2D)GD.Load($"res://images/{item.Key}.png"));
+            Interface.SetObjectCount(item.Key, item.Value);
         }
+
+        TileMap = GetNode<Tilemap>("TileMap");
+        TileMap.Clicked += _OnTilemapClicked;
     }
 
     public void _OnCharacterTriggerLaugh()
@@ -115,19 +120,13 @@ public partial class Game : Scene
         Laugh += laugh;
     }
 
-    public override void _Input(InputEvent @event)
+    public void _OnTilemapClicked(Vector2 position)
     {
         if (GameState == GameStateEnum.Playing)
         {
-            if (@event is InputEventMouseButton eventMouseButton)
-            {
-                if (eventMouseButton.Pressed && eventMouseButton.ButtonIndex == MouseButton.Left)
-                {
-                    var sign = SignScene.Instantiate<Object>();
-                    sign.GlobalPosition = GetLocalMousePosition();
-                    AddChild(sign);
-                }
-            }
+            var sign = SignScene.Instantiate<Object>();
+            sign.GlobalPosition = position;
+            AddChild(sign);
         }
     }
 }
