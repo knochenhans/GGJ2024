@@ -1,6 +1,11 @@
 using System.Linq;
 using Godot;
 
+public static class RNG_Manager
+{
+	public static RandomNumberGenerator rng = null;
+}
+
 public partial class SceneManager : Node
 {
 	[Export]
@@ -13,6 +18,8 @@ public partial class SceneManager : Node
 	public override void _Ready()
 	{
 		base._Ready();
+
+		RNG_Manager.rng = new RandomNumberGenerator();
 
 		Scenes.Add("Menu", "res://Menu.tscn");
 		Scenes.Add("Options", "res://Options.tscn");

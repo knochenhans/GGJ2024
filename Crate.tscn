@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://cgqmrvepf51n7"]
+
+[ext_resource type="PackedScene" uid="uid://dj7wd2f1yx3pp" path="res://Object.tscn" id="1_s2qag"]
+[ext_resource type="Texture2D" uid="uid://bpfj8c7ahnt7n" path="res://images/crate.png" id="2_raptx"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ocx8y"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_raptx")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sheui"]
+size = Vector2(28, 8)
+
+[node name="Object" instance=ExtResource("1_s2qag")]
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+sprite_frames = SubResource("SpriteFrames_ocx8y")
+
+[node name="CollisionShape2D" parent="." index="1"]
+y_sort_enabled = true
+position = Vector2(0, 12)
+shape = SubResource("RectangleShape2D_sheui")
+
+[node name="LifeTimer" parent="." index="4"]
+wait_time = 20.0

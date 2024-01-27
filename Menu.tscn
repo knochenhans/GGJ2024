@@ -3,9 +3,9 @@
 [ext_resource type="Theme" uid="uid://d3lg7vtet5t6a" path="res://Main.tres" id="1_porsx"]
 [ext_resource type="Script" path="res://Menu.cs" id="1_sy8v0"]
 [ext_resource type="FontFile" uid="uid://c6gf20attc22f" path="res://fonts/OTF/dogicapixelbold.otf" id="3_8dle5"]
-[ext_resource type="Texture2D" uid="uid://cvafnd75gv48g" path="res://images/laugh1.png" id="4_de6bk"]
-[ext_resource type="Texture2D" uid="uid://2rqxf63bsmhi" path="res://images/laugh2.png" id="5_c8xft"]
+[ext_resource type="PackedScene" uid="uid://b757i1oalvqbv" path="res://LaughFace2.tscn" id="7_0mgem"]
 [ext_resource type="AudioStream" uid="uid://cvb2br4hpsd6a" path="res://sounds/intro.ogg" id="7_66x7s"]
+[ext_resource type="PackedScene" uid="uid://c5hphcrfrxmjx" path="res://LaughFace.tscn" id="8_7vjx7"]
 [ext_resource type="PackedScene" uid="uid://b63wx7gvpmawy" path="res://CustomButton.tscn" id="13_mvxh3"]
 
 [node name="Menu" type="Control"]
@@ -85,17 +85,11 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Exit"
 
-[node name="Laugh1" type="Sprite2D" parent="."]
+[node name="LaughFace" parent="." instance=ExtResource("8_7vjx7")]
 position = Vector2(0, 506)
-scale = Vector2(2, 2)
-texture = ExtResource("4_de6bk")
-centered = false
 
-[node name="Laugh2" type="Sprite2D" parent="."]
+[node name="LaughFace2" parent="." instance=ExtResource("7_0mgem")]
 position = Vector2(986, 506)
-scale = Vector2(2, 2)
-texture = ExtResource("5_c8xft")
-centered = false
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_66x7s")

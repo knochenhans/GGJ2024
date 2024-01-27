@@ -215,6 +215,7 @@ scale = Vector2(0.6, 0.6)
 texture = ExtResource("8_jjyod")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+y_sort_enabled = true
 position = Vector2(-13, 0)
 sprite_frames = SubResource("SpriteFrames_0i6e5")
 animation = &"walk"
@@ -244,12 +245,16 @@ shape = SubResource("CapsuleShape2D_xsoap")
 volume_db = 3.0
 
 [node name="DecisionTimer" type="Timer" parent="."]
+wait_time = 2.0
 autostart = true
 
 [node name="BubbleTimer" type="Timer" parent="."]
 wait_time = 7.0
 autostart = true
 
+[node name="DecisionChangeTimer" type="Timer" parent="."]
+
 [connection signal="body_shape_entered" from="Area2D" to="." method="_OnArea2DBodyShapeEntered"]
 [connection signal="timeout" from="DecisionTimer" to="." method="_OnDecisionTimerTimeout"]
 [connection signal="timeout" from="BubbleTimer" to="." method="_OnBubbleTimerTimeout"]
+[connection signal="timeout" from="DecisionChangeTimer" to="." method="_OnDecisionChangeTimerTimeout"]

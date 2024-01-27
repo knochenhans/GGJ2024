@@ -1,10 +1,5 @@
 using Godot;
 
-public static class RNG_Manager
-{
-    public static RandomNumberGenerator rng = null;
-}
-
 public static class GlobalConstants
 {
 
@@ -57,10 +52,10 @@ public partial class Game : Scene
         }
     }
 
+    Godot.Collections.Dictionary<string, int> AvailableObject = new();
+
     public Game()
     {
-        RNG_Manager.rng = new RandomNumberGenerator();
-
         for (int i = 0; i < audioStreams.Length; i++)
         {
             audioStreams[i] = (AudioStream)GD.Load($"res://sounds/laugh{i + 1}.ogg");
@@ -82,6 +77,14 @@ public partial class Game : Scene
 
         LaughterSoundsNode = GetNode<AudioStreamPlayer>("LaughterSounds");
         LaughterSoundsDefaultVolume = LaughterSoundsNode.VolumeDb;
+
+        AvailableObject.Add("Sign", 3);
+        AvailableObject.Add("Crate", 3);
+
+        foreach (var item in AvailableObject)
+        {
+            GD.Print(item.Key, item.Value);
+        }
     }
 
     public void _OnCharacterTriggerLaugh()
@@ -118,9 +121,8 @@ public partial class Game : Scene
         {
             if (@event is InputEventMouseButton eventMouseButton)
             {
-                if (eventMouseButton.Pressed)
+                if (eventMouseButton.Pressed && eventMouseButton.ButtonIndex == MouseButton.Left)
                 {
-                    GD.Print("Mouse Click/Unclick at: ", eventMouseButton.Position);
                     var sign = SignScene.Instantiate<Object>();
                     sign.GlobalPosition = GetLocalMousePosition();
                     AddChild(sign);

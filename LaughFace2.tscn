@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3 uid="uid://b757i1oalvqbv"]
+
+[ext_resource type="Script" path="res://LaughFace.cs" id="1_wxwiq"]
+[ext_resource type="Texture2D" uid="uid://c15a5iqcxgo5r" path="res://images/laugh2_1.png" id="2_aj8b8"]
+[ext_resource type="Texture2D" uid="uid://fjhov62asd7q" path="res://images/laugh2_2.png" id="3_iksps"]
+[ext_resource type="Texture2D" uid="uid://bdctrb6lnoqdc" path="res://images/laugh2_3.png" id="4_k2b74"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bldlt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_aj8b8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_iksps")
+}, {
+"duration": 5.0,
+"texture": ExtResource("2_aj8b8")
+}, {
+"duration": 10.0,
+"texture": ExtResource("4_k2b74")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_aj8b8")
+}],
+"loop": false,
+"name": &"blink",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_aj8b8")
+}],
+"loop": false,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[node name="LaughFace" type="Node2D"]
+script = ExtResource("1_wxwiq")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_bldlt")
+animation = &"blink"
+autoplay = "idle"
+centered = false
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="timeout" from="Timer" to="." method="_OnTimerTimeout"]

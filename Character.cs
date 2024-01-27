@@ -26,6 +26,7 @@ public partial class Character : RigidBody2D
 
 	Timer FlipTimer { get; set; }
 	Timer BubbleTimer { get; set; }
+	Timer DecisionTimer { get; set; }
 
 	float minForceMultiplier = 50f;
 	float maxForceMultiplier = 100f;
@@ -146,6 +147,7 @@ public partial class Character : RigidBody2D
 
 		FlipTimer = GetNode<Timer>("FlipTimer");
 		BubbleTimer = GetNode<Timer>("BubbleTimer");
+		DecisionTimer = GetNode<Timer>("DecisionTimer");
 
 		SoundNode = GetNode<AudioStreamPlayer2D>("Sound");
 
@@ -286,8 +288,8 @@ public partial class Character : RigidBody2D
 
 	public void _OnDecisionTimerTimeout()
 	{
-		// currentForceMultiplier = RNG_Manager.rng.RandfRange(minForceMultiplier, maxForceMultiplier);
-		// CurrentDirection = new Vector2(RNG_Manager.rng.RandfRange(-1, 1), RNG_Manager.rng.RandfRange(-1, 1)) * currentForceMultiplier;
+		currentForceMultiplier = RNG_Manager.rng.RandfRange(minForceMultiplier, maxForceMultiplier);
+		CurrentDirection = new Vector2(RNG_Manager.rng.RandfRange(-1, 1), RNG_Manager.rng.RandfRange(-1, 1)) * currentForceMultiplier;
 	}
 
 	public void _OnBubbleTimerTimeout()
@@ -330,5 +332,10 @@ public partial class Character : RigidBody2D
 			}
 		}
 		return currentMessage;
+	}
+
+	public void _OnDecisionChangeTimerTimeout()
+	{
+		DecisionTimer.WaitTime = RNG_Manager.rng.RandfRange(1f, 5f);
 	}
 }
