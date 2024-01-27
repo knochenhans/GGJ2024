@@ -10,6 +10,13 @@ public static class GlobalConstants
 
 }
 
+public enum GameStateEnum
+{
+    Playing,
+    Paused,
+    GameOver
+}
+
 public partial class Game : Scene
 {
     AudioStream[] audioStreams = new AudioStream[6];
@@ -20,6 +27,22 @@ public partial class Game : Scene
 
     int characterLastLife = 0;
 
+    PackedScene SignScene = ResourceLoader.Load<PackedScene>("res://Sign.tscn");
+
+    GameStateEnum _gameState = GameStateEnum.Playing;
+    public GameStateEnum GameState
+    {
+        get => _gameState;
+        set
+        {
+            _gameState = value;
+        }
+    }
+
+    AudioStreamPlayer LaughterSoundsNode { get; set; }
+    float LaughterSoundsDefaultVolume;
+
+    int _laugh = 0;
     public int Laugh
     {
         get => _laugh; set
@@ -33,8 +56,6 @@ public partial class Game : Scene
             Interface.UpdateLaugh(_laugh);
         }
     }
-
-    int _laugh = 0;
 
     public Game()
     {
@@ -55,15 +76,23 @@ public partial class Game : Scene
 
         Character.TriggerLaugh += _OnCharacterTriggerLaugh;
         Character.LifeChanged += _OnCharacterLifeChanged;
+        Character.LaughChanged += _OnCharacterLaughChanged;
+
         Character.Init();
+
+        LaughterSoundsNode = GetNode<AudioStreamPlayer>("LaughterSounds");
+        LaughterSoundsDefaultVolume = LaughterSoundsNode.VolumeDb;
     }
 
     public void _OnCharacterTriggerLaugh()
     {
-        var index = RNG_Manager.rng.RandiRange(0, audioStreams.Length - 1);
-        var audioStreamPlayer = GetNode<AudioStreamPlayer>("LaughterSounds");
-        audioStreamPlayer.Stream = audioStreams[index];
-        audioStreamPlayer.Play();
+        LaughterSoundsNode.VolumeDb = LaughterSoundsDefaultVolume + (3.0f / 100 * Laugh);
+        if (!LaughterSoundsNode.Playing)
+        {
+            var index = RNG_Manager.rng.RandiRange(0, audioStreams.Length - 1);
+            LaughterSoundsNode.Stream = audioStreams[index];
+            LaughterSoundsNode.Play();
+        }
     }
 
     public void _OnCharacterLifeChanged(int life)
@@ -76,5 +105,27 @@ public partial class Game : Scene
     public void _OnLaughterReduceTimerTimeout()
     {
         Laugh -= 1;
+    }
+
+    public void _OnCharacterLaughChanged(int laugh)
+    {
+        Laugh += laugh;
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (GameState == GameStateEnum.Playing)
+        {
+            if (@event is InputEventMouseButton eventMouseButton)
+            {
+                if (eventMouseButton.Pressed)
+                {
+                    GD.Print("Mouse Click/Unclick at: ", eventMouseButton.Position);
+                    var sign = SignScene.Instantiate<Object>();
+                    sign.GlobalPosition = GetLocalMousePosition();
+                    AddChild(sign);
+                }
+            }
+        }
     }
 }

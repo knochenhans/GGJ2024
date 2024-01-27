@@ -9,12 +9,18 @@ public partial class Bubble : PanelContainer
 	[Export]
 	public Vector2 Distance = new Vector2(0, -20);
 
+	AnimationPlayer AnimationPlayerNode { get; set; }
+
 	public Timer LifeTimer { get; set; }
 
 	public override void _Ready()
 	{
 		LifeTimer = GetNode<Timer>("LifeTimer");
 		LifeTimer.WaitTime = lifeTime;
+		LifeTimer.Start();
+
+		AnimationPlayerNode = GetNode<AnimationPlayer>("AnimationPlayer");
+		AnimationPlayerNode.Play("FadeIn");
 	}
 
 	public void Init(string message, Vector2 position)
@@ -26,6 +32,8 @@ public partial class Bubble : PanelContainer
 
     public void _OnLifeTimerTimeout()
     {
+		// AnimationPlayerNode.Play("FadeOut");
+		// await ToSignal(AnimationPlayerNode, "animation_finished");
     	QueueFree();
     }
 

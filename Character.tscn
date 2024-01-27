@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://qk0rw3gbvld6"]
+[gd_scene load_steps=27 format=3 uid="uid://qk0rw3gbvld6"]
 
 [ext_resource type="Texture2D" uid="uid://b0eu4dgstagwp" path="res://images/craftpix-net-481510-free-townspeople-cyberpunk-pixel-art/1/Idle.png" id="1_5cxej"]
 [ext_resource type="Script" path="res://Character.cs" id="1_dvhxx"]
@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://72rmsx1e3uhi" path="res://sounds/ouch2.ogg" id="3_okdg6"]
 [ext_resource type="AudioStream" uid="uid://ctbp6rbnmdoby" path="res://sounds/ouch3.ogg" id="4_qn5un"]
 [ext_resource type="AudioStream" uid="uid://urnsu3x36j3" path="res://sounds/die.ogg" id="5_sxdny"]
+[ext_resource type="Texture2D" uid="uid://5t1pjpjbryl8" path="res://images/shadow.png" id="8_jjyod"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tg44o"]
 bounce = 0.45
@@ -134,7 +135,19 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(-13, 0), Vector2(0, 13)]
+"values": [Vector2(-13, 0), Vector2(0, 20)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../Shadow:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.05),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-13, 26), Vector2(5, 26)]
 }
 
 [sub_resource type="Animation" id="Animation_jcq8h"]
@@ -163,6 +176,18 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(-13, 0)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../Shadow:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-13, 26)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_d4kpf"]
 _data = {
@@ -180,9 +205,14 @@ lock_rotation = true
 max_contacts_reported = 1
 contact_monitor = true
 script = ExtResource("1_dvhxx")
-ouchSounds = Array[AudioStream]([ExtResource("2_jjjv1"), ExtResource("3_okdg6"), ExtResource("4_qn5un")])
-dieSound = ExtResource("5_sxdny")
+OuchSounds = Array[AudioStream]([ExtResource("2_jjjv1"), ExtResource("3_okdg6"), ExtResource("4_qn5un")])
+DieSound = ExtResource("5_sxdny")
 damageFactor = 20.0
+
+[node name="Shadow" type="Sprite2D" parent="."]
+position = Vector2(-13, 26)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("8_jjyod")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-13, 0)

@@ -1,0 +1,77 @@
+[gd_scene load_steps=8 format=3 uid="uid://dj7wd2f1yx3pp"]
+
+[ext_resource type="Texture2D" uid="uid://7c8vsx3b8fws" path="res://images/craftpix-net-965049-free-industrial-zone-tileset-pixel-art/3 Objects/Pointer1.png" id="1_6pe7m"]
+[ext_resource type="Script" path="res://Object.cs" id="1_fqbyr"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_we72k"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_6pe7m")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b7t5w"]
+radius = 6.0
+height = 24.0
+
+[sub_resource type="Animation" id="Animation_mkoho"]
+resource_name = "FadeOut"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1e-05, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_u3gwo"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_areav"]
+_data = {
+"FadeOut": SubResource("Animation_mkoho"),
+"RESET": SubResource("Animation_u3gwo")
+}
+
+[node name="Object" type="RigidBody2D"]
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("1_fqbyr")
+Damage = 10
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_we72k")
+animation = &"Idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("CapsuleShape2D_b7t5w")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_areav")
+}
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_OnAnimationPlayerAnimationFinished"]

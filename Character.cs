@@ -8,12 +8,15 @@ public partial class Character : RigidBody2D
 
 	[Signal]
 	public delegate void LifeChangedEventHandler(int life);
+	
+	[Signal]
+	public delegate void LaughChangedEventHandler(int laugh);
 
 	[Export]
-	public AudioStream[] ouchSounds;
+	public AudioStream[] OuchSounds;
 
 	[Export]
-	public AudioStream dieSound;
+	public AudioStream DieSound;
 
 	AudioStreamPlayer2D SoundNode { get; set; }
 	AnimatedSprite2D AnimatedSprite2D { get; set; }
@@ -89,7 +92,7 @@ public partial class Character : RigidBody2D
 					Freeze = true;
 					BubbleTimer.Stop();
 					Life = 0;
-					SoundNode.Stream = dieSound;
+					SoundNode.Stream = DieSound;
 					SoundNode.Play();
 					break;
 				case StateEnum.LyingDown:
@@ -136,6 +139,8 @@ public partial class Character : RigidBody2D
 		AnimatedSprite2D.Play("idle");
 
 		AnimationPlayer = AnimatedSprite2D.GetNode<AnimationPlayer>("AnimationPlayer");
+
+		currentForceMultiplier = 50f;
 
 		CurrentDirection = new Vector2(-1, 0) * currentForceMultiplier;
 
@@ -185,16 +190,24 @@ public partial class Character : RigidBody2D
 
 			if (bodies.Count > 0)
 			{
-				Collide();
+				Collide(bodies[0]);
 			}
 		}
 	}
 
-	private void Collide()
+	private void Collide(Node2D body)
 	{
 		checkCollision = true;
 
 		Life -= (int)(LinearVelocity.Length() / 10 * damageFactor);
+
+		if(body is Object)
+		{
+			var obj = body as Object;
+
+			Life -= obj.Damage;
+			EmitSignal(SignalName.LaughChanged, obj.Laugh);
+		}
 
 		if (Life <= 0)
 		{
@@ -229,7 +242,7 @@ public partial class Character : RigidBody2D
 			checkCollision = false;
 			CurrentDirection = LinearVelocity.Normalized() * currentForceMultiplier;
 
-			SoundNode.Stream = ouchSounds[RNG_Manager.rng.RandiRange(0, ouchSounds.Length - 1)];
+			SoundNode.Stream = OuchSounds[RNG_Manager.rng.RandiRange(0, OuchSounds.Length - 1)];
 			SoundNode.Play();
 
 			EmitSignal(SignalName.TriggerLaugh);
@@ -273,8 +286,8 @@ public partial class Character : RigidBody2D
 
 	public void _OnDecisionTimerTimeout()
 	{
-		currentForceMultiplier = RNG_Manager.rng.RandfRange(minForceMultiplier, maxForceMultiplier);
-		CurrentDirection = new Vector2(RNG_Manager.rng.RandfRange(-1, 1), RNG_Manager.rng.RandfRange(-1, 1)) * currentForceMultiplier;
+		// currentForceMultiplier = RNG_Manager.rng.RandfRange(minForceMultiplier, maxForceMultiplier);
+		// CurrentDirection = new Vector2(RNG_Manager.rng.RandfRange(-1, 1), RNG_Manager.rng.RandfRange(-1, 1)) * currentForceMultiplier;
 	}
 
 	public void _OnBubbleTimerTimeout()
