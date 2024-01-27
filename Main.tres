@@ -1,0 +1,40 @@
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://d3lg7vtet5t6a"]
+
+[ext_resource type="FontFile" uid="uid://d1qlac6vgr01m" path="res://fonts/OTF/dogica.otf" id="1_m5ypl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ia1tu"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.823529, 0.823529, 0.823529, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_top = 10.0
+expand_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3po7c"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_top = 10.0
+expand_margin_bottom = 10.0
+
+[resource]
+default_font = ExtResource("1_m5ypl")
+default_font_size = 10
+Button/styles/disabled = SubResource("StyleBoxFlat_ia1tu")
+Button/styles/focus = SubResource("StyleBoxFlat_ia1tu")
+Button/styles/hover = SubResource("StyleBoxFlat_3po7c")
+Button/styles/normal = SubResource("StyleBoxFlat_ia1tu")
+Button/styles/pressed = SubResource("StyleBoxFlat_ia1tu")

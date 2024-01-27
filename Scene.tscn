@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://b224u6aooew0c"]
+
+[ext_resource type="Script" path="res://Scene.cs" id="1_x0iod"]
+[ext_resource type="PackedScene" uid="uid://cc20k8en6s4lt" path="res://Fade.tscn" id="2_itfod"]
+
+[node name="Scene" type="Node2D"]
+script = ExtResource("1_x0iod")
+
+[node name="Fade" parent="." instance=ExtResource("2_itfod")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5000.0
+offset_top = -5000.0
+offset_right = 5000.0
+offset_bottom = 5000.0

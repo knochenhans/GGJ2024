@@ -1,0 +1,106 @@
+[gd_scene load_steps=8 format=3 uid="uid://bom6v5ank5q4b"]
+
+[ext_resource type="Theme" uid="uid://d3lg7vtet5t6a" path="res://Main.tres" id="1_porsx"]
+[ext_resource type="Script" path="res://Menu.cs" id="1_sy8v0"]
+[ext_resource type="FontFile" uid="uid://c6gf20attc22f" path="res://fonts/OTF/dogicapixelbold.otf" id="3_8dle5"]
+[ext_resource type="Texture2D" uid="uid://cvafnd75gv48g" path="res://images/laugh1.png" id="4_de6bk"]
+[ext_resource type="Texture2D" uid="uid://2rqxf63bsmhi" path="res://images/laugh2.png" id="5_c8xft"]
+[ext_resource type="AudioStream" uid="uid://cvb2br4hpsd6a" path="res://sounds/intro.ogg" id="7_66x7s"]
+[ext_resource type="PackedScene" uid="uid://b63wx7gvpmawy" path="res://CustomButton.tscn" id="13_mvxh3"]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.5, 0.5)
+theme = ExtResource("1_porsx")
+script = ExtResource("1_sy8v0")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+zoom = Vector2(2, 2)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -315.0
+offset_top = -98.0
+offset_right = 315.0
+offset_bottom = -67.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_8dle5")
+theme_override_font_sizes/font_size = 40
+text = "Last Entertainment"
+horizontal_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_top = 270
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="ButtonStart" parent="CenterContainer/MarginContainer/VBoxContainer" instance=ExtResource("13_mvxh3")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Start"
+
+[node name="ButtonOptions" parent="CenterContainer/MarginContainer/VBoxContainer" instance=ExtResource("13_mvxh3")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Options"
+
+[node name="ButtonExit" parent="CenterContainer/MarginContainer/VBoxContainer" instance=ExtResource("13_mvxh3")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Exit"
+
+[node name="Laugh1" type="Sprite2D" parent="."]
+position = Vector2(0, 506)
+scale = Vector2(2, 2)
+texture = ExtResource("4_de6bk")
+centered = false
+
+[node name="Laugh2" type="Sprite2D" parent="."]
+position = Vector2(986, 506)
+scale = Vector2(2, 2)
+texture = ExtResource("5_c8xft")
+centered = false
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_66x7s")
+autoplay = true
+
+[connection signal="pressed" from="CenterContainer/MarginContainer/VBoxContainer/ButtonStart" to="." method="_OnStartButtonPressed"]
+[connection signal="pressed" from="CenterContainer/MarginContainer/VBoxContainer/ButtonOptions" to="." method="_OnOptionsButtonPressed"]
+[connection signal="pressed" from="CenterContainer/MarginContainer/VBoxContainer/ButtonExit" to="." method="_OnExitButtonPressed"]
