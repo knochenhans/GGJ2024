@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://c3yr53cf2j200"]
+[gd_scene load_steps=13 format=3 uid="uid://c3yr53cf2j200"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_84lm5"]
 [ext_resource type="PackedScene" uid="uid://cg1ahu4t5xr7p" path="res://Tilemap.tscn" id="2_s08ox"]
@@ -8,9 +8,16 @@
 [ext_resource type="PackedScene" uid="uid://b224u6aooew0c" path="res://Scene.tscn" id="6_215ng"]
 [ext_resource type="PackedScene" uid="uid://dpsinnrltugos" path="res://Interface.tscn" id="7_gsaj1"]
 [ext_resource type="AudioStream" uid="uid://bqfuq8twjtyli" path="res://sounds/loop.ogg" id="8_71amn"]
+[ext_resource type="AudioStream" uid="uid://cvb2br4hpsd6a" path="res://sounds/intro.ogg" id="9_1ejfg"]
+[ext_resource type="FontFile" uid="uid://c6gf20attc22f" path="res://fonts/OTF/dogicapixelbold.otf" id="10_ncx8p"]
+[ext_resource type="AudioStream" uid="uid://b1enlhawbxxjd" path="res://sounds/interface/click4.ogg" id="11_f8eev"]
+[ext_resource type="AudioStream" uid="uid://b712k7c4u7884" path="res://sounds/Beep.ogg" id="11_q1dxs"]
 
 [node name="Game" instance=ExtResource("6_215ng")]
 script = ExtResource("1_84lm5")
+PlaceHealing = false
+DontReduceLaugh = false
+WinOnWKey = true
 
 [node name="ColorRect" type="ColorRect" parent="." index="1"]
 offset_left = -335.0
@@ -20,16 +27,18 @@ offset_bottom = 480.0
 color = Color(0, 0, 0, 1)
 
 [node name="LaughFace1" parent="." index="2" instance=ExtResource("5_ww4f4")]
-position = Vector2(-302, 294)
+z_index = 10
+position = Vector2(-685, 513)
 
 [node name="LaughFace2" parent="." index="3" instance=ExtResource("4_3nw4e")]
-position = Vector2(684, 296)
+z_index = 10
+position = Vector2(1067, 513)
 
 [node name="Interface" parent="." index="4" instance=ExtResource("7_gsaj1")]
-offset_left = -302.0
-offset_top = -213.0
-offset_right = 850.0
-offset_bottom = 435.0
+offset_left = -687.0
+offset_top = -429.0
+offset_right = 1233.0
+offset_bottom = 651.0
 
 [node name="TileMap" parent="." index="5" instance=ExtResource("2_s08ox")]
 y_sort_enabled = true
@@ -47,15 +56,67 @@ position = Vector2(274, 111)
 
 [node name="LaughterSounds" type="AudioStreamPlayer" parent="." index="8"]
 volume_db = -6.0
+bus = &"FX"
 
 [node name="WorldSounds" type="AudioStreamPlayer2D" parent="." index="9"]
+bus = &"FX"
 
-[node name="LaughterReduceTimer" type="Timer" parent="." index="10"]
-autostart = true
-
-[node name="Loop" type="AudioStreamPlayer" parent="." index="11"]
+[node name="Loop" type="AudioStreamPlayer" parent="." index="10"]
 stream = ExtResource("8_71amn")
 volume_db = -6.0
 autoplay = true
 
+[node name="WonSound" type="AudioStreamPlayer" parent="." index="11"]
+stream = ExtResource("9_1ejfg")
+
+[node name="PlaceObjectSound" type="AudioStreamPlayer" parent="." index="12"]
+stream = ExtResource("11_f8eev")
+
+[node name="CantPlaceObjectSound" type="AudioStreamPlayer" parent="." index="13"]
+stream = ExtResource("11_q1dxs")
+
+[node name="WonLabel" type="Label" parent="." index="14"]
+visible = false
+z_index = 105
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 147.0
+offset_top = 43.0
+offset_right = 391.0
+offset_bottom = 109.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("10_ncx8p")
+theme_override_font_sizes/font_size = 75
+text = "WON"
+
+[node name="GameOverLabel" type="Label" parent="." index="15"]
+visible = false
+z_index = 105
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 147.0
+offset_top = 43.0
+offset_right = 391.0
+offset_bottom = 109.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("10_ncx8p")
+theme_override_font_sizes/font_size = 75
+text = "GAME OVER"
+
+[node name="LaughterReduceTimer" type="Timer" parent="." index="16"]
+autostart = true
+
+[node name="HealingSpawnTimer" type="Timer" parent="." index="17"]
+wait_time = 10.0
+autostart = true
+
 [connection signal="timeout" from="LaughterReduceTimer" to="." method="_OnLaughterReduceTimerTimeout"]
+[connection signal="timeout" from="HealingSpawnTimer" to="." method="_OnHealingSpawnTimerTimeout"]

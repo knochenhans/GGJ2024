@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://dj7wd2f1yx3pp"]
+[gd_scene load_steps=11 format=3 uid="uid://dj7wd2f1yx3pp"]
 
 [ext_resource type="Texture2D" uid="uid://7c8vsx3b8fws" path="res://images/craftpix-net-965049-free-industrial-zone-tileset-pixel-art/3 Objects/Pointer1.png" id="1_6pe7m"]
 [ext_resource type="Script" path="res://Object.cs" id="1_fqbyr"]
+[ext_resource type="Texture2D" uid="uid://5t1pjpjbryl8" path="res://images/shadow.png" id="3_jvn33"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_we72k"]
 animations = [{
@@ -15,24 +16,8 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b7t5w"]
-radius = 6.0
-height = 24.0
-
-[sub_resource type="Animation" id="Animation_mkoho"]
-resource_name = "FadeOut"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(1, 1), Vector2(1e-05, 1)]
-}
+radius = 11.0
+height = 32.0
 
 [sub_resource type="Animation" id="Animation_u3gwo"]
 length = 0.001
@@ -60,6 +45,18 @@ tracks/1/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AnimatedSprite2D:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_6ys2t"]
 resource_name = "Spawning"
@@ -76,14 +73,35 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.25),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [true, false]
+"values": [false, true]
+}
+
+[sub_resource type="Animation" id="Animation_80uci"]
+resource_name = "Touch"
+length = 0.3
+
+[sub_resource type="Animation" id="Animation_iqgv4"]
+resource_name = "FadeOut"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1e-05, 1)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_areav"]
 _data = {
-"FadeOut": SubResource("Animation_mkoho"),
+"FadeOut": SubResource("Animation_iqgv4"),
 "RESET": SubResource("Animation_u3gwo"),
-"Spawning": SubResource("Animation_6ys2t")
+"Spawning": SubResource("Animation_6ys2t"),
+"Touch": SubResource("Animation_80uci")
 }
 
 [node name="Object" type="RigidBody2D"]
@@ -94,6 +112,7 @@ script = ExtResource("1_fqbyr")
 Damage = 10
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 1
 sprite_frames = SubResource("SpriteFrames_we72k")
 animation = &"Idle"
 
@@ -101,7 +120,7 @@ animation = &"Idle"
 position = Vector2(0, 3)
 shape = SubResource("CapsuleShape2D_b7t5w")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." groups=["Object"]]
 libraries = {
 "": SubResource("AnimationLibrary_areav")
 }
@@ -112,6 +131,13 @@ wait_time = 2.0
 [node name="LifeTimer" type="Timer" parent="."]
 wait_time = 5.0
 autostart = true
+
+[node name="TouchSound" type="AudioStreamPlayer2D" parent="."]
+
+[node name="Shadow" type="Sprite2D" parent="."]
+position = Vector2(0.25, 9)
+scale = Vector2(0.369048, 0.2)
+texture = ExtResource("3_jvn33")
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_OnAnimationPlayerAnimationFinished"]
 [connection signal="timeout" from="SpawningTimer" to="." method="_OnSpawningTimerTimeout"]

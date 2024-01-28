@@ -1,0 +1,150 @@
+[gd_scene load_steps=11 format=3 uid="uid://b5hoxwbxumpys"]
+
+[ext_resource type="PackedScene" uid="uid://dj7wd2f1yx3pp" path="res://Object.tscn" id="1_s304u"]
+[ext_resource type="Texture2D" uid="uid://sutktr43gaoy" path="res://images/Hammer_small.png" id="2_hpqdp"]
+[ext_resource type="AudioStream" uid="uid://b67n1myhgowde" path="res://sounds/crate.ogg" id="3_x3hmd"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ocx8y"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_hpqdp")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sheui"]
+size = Vector2(18, 22)
+
+[sub_resource type="Animation" id="Animation_u3gwo"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AnimatedSprite2D:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_6ys2t"]
+resource_name = "Spawning"
+length = 0.5
+loop_mode = 1
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="Animation" id="Animation_7hv66"]
+resource_name = "FadeOut"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1e-05, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_cabb6"]
+resource_name = "Touch"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:rotation")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(3.13834, 3.13834),
+"update": 0,
+"values": [0.0, -1.5708]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jxp4h"]
+_data = {
+"FadeOut": SubResource("Animation_7hv66"),
+"RESET": SubResource("Animation_u3gwo"),
+"Spawning": SubResource("Animation_6ys2t"),
+"Touch": SubResource("Animation_cabb6")
+}
+
+[node name="Hammer" instance=ExtResource("1_s304u")]
+Damage = 30
+Laugh = 50
+StunTime = 5.0
+LifeTime = 10.0
+SpawningTime = 5.0
+
+[node name="AnimatedSprite2D" parent="." index="0" groups=["Object"]]
+position = Vector2(0, -3)
+sprite_frames = SubResource("SpriteFrames_ocx8y")
+
+[node name="CollisionShape2D" parent="." index="1"]
+y_sort_enabled = true
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_sheui")
+
+[node name="AnimationPlayer" parent="." index="2"]
+libraries = {
+"": SubResource("AnimationLibrary_jxp4h")
+}
+
+[node name="SpawningTimer" parent="." index="3"]
+wait_time = 5.0
+
+[node name="LifeTimer" parent="." index="4"]
+wait_time = 10.0
+
+[node name="TouchSound" parent="." index="5"]
+stream = ExtResource("3_x3hmd")
+
+[node name="Shadow" parent="." index="6"]
+position = Vector2(1.49012e-08, 11)
+scale = Vector2(0.392857, 0.2)

@@ -8,15 +8,15 @@ public partial class Character : RigidBody2D
 
 	[Signal]
 	public delegate void LifeChangedEventHandler(int life);
-	
+
 	[Signal]
 	public delegate void LaughChangedEventHandler(int laugh);
 
-	[Export]
-	public AudioStream[] OuchSounds;
+	[Signal]
+	public delegate void DeadEventHandler();
 
-	[Export]
-	public AudioStream DieSound;
+	[Signal]
+	public delegate void StunnedEventHandler();
 
 	AudioStreamPlayer2D SoundNode { get; set; }
 	AnimatedSprite2D AnimatedSprite2D { get; set; }
@@ -27,6 +27,7 @@ public partial class Character : RigidBody2D
 	Timer FlipTimer { get; set; }
 	Timer BubbleTimer { get; set; }
 	Timer DecisionTimer { get; set; }
+	Timer StunnedTimer { get; set; }
 
 	float minForceMultiplier = 50f;
 	float maxForceMultiplier = 100f;
@@ -40,23 +41,36 @@ public partial class Character : RigidBody2D
 	[Export]
 	int _life = 100;
 
-	[Export]
-	float damageFactor = 1f;
-
 	public int Life
 	{
 		get => _life; set
 		{
-			_life = value;
+			_life = Mathf.Clamp(value, 0, 100);
 			EmitSignal(SignalName.LifeChanged, _life);
 		}
 	}
+
+	[Export]
+	float damageFactor = 1f;
+
+	[ExportCategory("Debug")]
+	[Export]
+	public bool DecisionsEnabled { get; set; } = true;
+
+	[ExportCategory("Sounds")]
+	[Export]
+	public AudioStream[] OuchSounds;
+
+	[Export]
+	public AudioStream DieSound;
+
+	[Export]
+	public AudioStream StunnedSound;
 
 	enum StateEnum
 	{
 		Idle,
 		Walking,
-		LyingDown,
 		Stunned,
 		Dead
 	}
@@ -71,6 +85,8 @@ public partial class Character : RigidBody2D
 
 	bool checkCollision = false;
 
+	AnimatedSprite2D Stars { get; set; }
+
 	Vector2 CurrentDirection { get; set; } = new Vector2();
 	private StateEnum _currentState = StateEnum.Idle;
 	private StateEnum CurrentState
@@ -78,29 +94,50 @@ public partial class Character : RigidBody2D
 		get => _currentState;
 		set
 		{
+
 			switch (value)
 			{
 				case StateEnum.Idle:
+					Enable(true);
+					if (_currentState == StateEnum.Stunned)
+					{
+						ContactMonitor = true;
+						Freeze = false;
+						BubbleTimer.Start();
+						AnimationPlayer.Play("RESET");
+						Stars.Visible = false;
+						Stars.Stop();
+					}
 					AnimatedSprite2D.Play("idle");
 					break;
 				case StateEnum.Walking:
 					AnimatedSprite2D.Play("walk");
 					break;
 				case StateEnum.Dead:
-					AnimatedSprite2D.Stop();
+					// AnimatedSprite2D.Stop();
 					AnimationPlayer.Play("Fall");
-					ContactMonitor = false;
-					Freeze = true;
-					BubbleTimer.Stop();
+					// ContactMonitor = false;
+					// Freeze = true;
+					// BubbleTimer.Stop();
 					Life = 0;
+					Enable(false);
 					SoundNode.Stream = DieSound;
 					SoundNode.Play();
-					break;
-				case StateEnum.LyingDown:
-					AnimatedSprite2D.Play("lie");
+					EmitSignal(SignalName.Dead);
 					break;
 				case StateEnum.Stunned:
-					AnimatedSprite2D.Play("stun");
+					StunnedTimer.Start();
+					// AnimatedSprite2D.Stop();
+					AnimationPlayer.Play("Fall");
+					// ContactMonitor = false;
+					// Freeze = true;
+					// BubbleTimer.Stop();
+					Enable(false);
+					SoundNode.Stream = StunnedSound;
+					SoundNode.Play();
+					Stars.Visible = true;
+					Stars.Play("stunned");
+					EmitSignal(SignalName.Stunned);
 					break;
 				default:
 					AnimatedSprite2D.Play("idle");
@@ -145,29 +182,47 @@ public partial class Character : RigidBody2D
 
 		CurrentDirection = new Vector2(-1, 0) * currentForceMultiplier;
 
+		Stars = GetNode<AnimatedSprite2D>("Stars");
+
 		FlipTimer = GetNode<Timer>("FlipTimer");
 		BubbleTimer = GetNode<Timer>("BubbleTimer");
 		DecisionTimer = GetNode<Timer>("DecisionTimer");
+		StunnedTimer = GetNode<Timer>("StunnedTimer");
 
 		SoundNode = GetNode<AudioStreamPlayer2D>("Sound");
 
 		currentForceMultiplier = RNG_Manager.rng.RandfRange(minForceMultiplier, maxForceMultiplier);
-
-		LoadMessages();
 	}
 
-	public void Init()
+	public void Enable(bool enable)
 	{
-		EmitSignal(SignalName.LifeChanged, _life);
+		DecisionsEnabled = enable;
+
+		AnimatedSprite2D.Stop();
+		ContactMonitor = enable;
+		Freeze = !enable;
+		SetPhysicsProcess(enable);
+
+		if (enable)
+		{
+			DecisionTimer.Start();
+			BubbleTimer.Start();
+		}
+		else
+		{
+			DecisionTimer.Stop();
+			BubbleTimer.Stop();
+		}
 	}
+
+	public void Init() => EmitSignal(SignalName.LifeChanged, _life);
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if (CurrentState != StateEnum.Dead)
+		if (CurrentState != StateEnum.Dead && CurrentState != StateEnum.Stunned)
 		{
-			AfterCollision();
+			AfterInternalCollision();
 
-			base._PhysicsProcess(delta);
 			ApplyCentralForce(CurrentDirection);
 
 			if (LinearVelocity.Length() > 0)
@@ -175,57 +230,18 @@ public partial class Character : RigidBody2D
 				CurrentState = StateEnum.Walking;
 
 				if (LinearVelocity.X > 0)
-				{
 					CurrentFlipState = FlipStateEnum.Right;
-				}
 				else
-				{
 					CurrentFlipState = FlipStateEnum.Left;
-				}
 			}
 			else
-			{
 				CurrentState = StateEnum.Idle;
-			}
 
 			var bodies = GetCollidingBodies();
 
 			if (bodies.Count > 0)
-			{
 				Collide(bodies[0]);
-			}
 		}
-	}
-
-	private void Collide(Node2D body)
-	{
-		checkCollision = true;
-
-		Life -= (int)(LinearVelocity.Length() / 10 * damageFactor);
-
-		if(body is Object)
-		{
-			var obj = body as Object;
-
-			Life -= obj.Damage;
-			EmitSignal(SignalName.LaughChanged, obj.Laugh);
-		}
-
-		if (Life <= 0)
-		{
-			CurrentState = StateEnum.Dead;
-			// LinearVelocity = new Vector2();
-			// CurrentDirection = new Vector2();
-			FlipTimer.Stop();
-			// EmitSignal(SignalName.TriggerLaugh);
-		}
-		// else
-		// {
-		// 	CurrentState = StateEnum.Stunned;
-		// 	LinearVelocity = new Vector2();
-		// 	CurrentDirection = new Vector2();
-		// 	FlipTimer.Stop();
-		// }
 	}
 
 	public override void _Process(double delta)
@@ -237,7 +253,44 @@ public partial class Character : RigidBody2D
 				Bubble = null;
 	}
 
-	private void AfterCollision()
+	private void Collide(Node2D body)
+	{
+		GD.Print("Collide");
+
+		checkCollision = true;
+
+		var damage = (int)(LinearVelocity.Length() / 10 * damageFactor);
+
+		Life -= damage;
+
+		if (body is Object)
+		{
+			var obj = body as Object;
+
+			Life -= obj.Damage;
+
+			if (obj.StunTime > 0 && Life > 0)
+			{
+				StunnedTimer.WaitTime = obj.StunTime;
+				CurrentState = StateEnum.Stunned;
+			}
+
+			EmitSignal(SignalName.LaughChanged, obj.Laugh);
+		}
+		else if (body is TileMap)
+			EmitSignal(SignalName.LaughChanged, damage);
+
+		if (Life <= 0)
+		{
+			CurrentState = StateEnum.Dead;
+			// LinearVelocity = new Vector2();
+			// CurrentDirection = new Vector2();
+			FlipTimer.Stop();
+			// EmitSignal(SignalName.TriggerLaugh);
+		}
+	}
+
+	private void AfterInternalCollision()
 	{
 		if (checkCollision)
 		{
@@ -251,30 +304,15 @@ public partial class Character : RigidBody2D
 		}
 	}
 
-	public void _OnArea2DBodyShapeEntered(Rid body_rid, Node2D body, int body_shape_index, int local_shape_index)
+	public void _OnArea2DAreaEntered(Area2D area)
 	{
-		// GD.Print(body_rid);
-		// GD.Print(body);
-		// GD.Print(body_shape_index);
-		// GD.Print(local_shape_index);
+		if (area is Healing)
+		{
+			var healing = area as Healing;
 
-		// if (body != null)
-		// {
-		// 	var tileMap = body as TileMap;
-
-		// 	if (tileMap != null)
-		// 	{
-		// 		var coordinates = tileMap.GetCoordsForBodyRid(body_rid);
-		// 		GD.Print(coordinates);
-		// 		var worldCoordinats = tileMap.MapToLocal(coordinates);
-		// 		// GD.Print(ToLocal(worldCoordinats).Normalized());
-		// 		var reflect = (worldCoordinats - GlobalPosition).Normalized();
-
-		// 		GD.Print(body);
-		// 		GD.Print(body_rid);
-		// 		GD.Print(reflect);
-		// 	}
-		// }
+			Life += healing.Life;
+			healing.Touch();
+		}
 	}
 
 	public void Flip()
@@ -288,8 +326,11 @@ public partial class Character : RigidBody2D
 
 	public void _OnDecisionTimerTimeout()
 	{
-		currentForceMultiplier = RNG_Manager.rng.RandfRange(minForceMultiplier, maxForceMultiplier);
-		CurrentDirection = new Vector2(RNG_Manager.rng.RandfRange(-1, 1), RNG_Manager.rng.RandfRange(-1, 1)) * currentForceMultiplier;
+		if (DecisionsEnabled)
+		{
+			currentForceMultiplier = RNG_Manager.rng.RandfRange(minForceMultiplier, maxForceMultiplier);
+			CurrentDirection = new Vector2(RNG_Manager.rng.RandfRange(-1, 1), RNG_Manager.rng.RandfRange(-1, 1)) * currentForceMultiplier;
+		}
 	}
 
 	public void _OnBubbleTimerTimeout()
@@ -298,44 +339,14 @@ public partial class Character : RigidBody2D
 		GetParent().AddChild(Bubble);
 		Bubble.LifeTimer.Timeout += _OnBubbleLifeTimeout;
 
-		Bubble.Init(GetRandomMessage(), GlobalPosition);
+		Bubble.Init(MessageManager.GetRandomMessage(), GlobalPosition);
 	}
 
-	public void _OnBubbleLifeTimeout()
-	{
-		// Bubble.QueueFree();
-		// RemoveChild(Bubble);
-		// Task.Delay(500).ContinueWith(t => { Bubble = null; });
-		// Bubble.CallDeferred("QueueFree");
-		Bubble = null;
-	}
+	public void _OnBubbleLifeTimeout() => Bubble = null;
 
-	public void LoadMessages()
-	{
-		using var file = FileAccess.Open("res://messages.txt", FileAccess.ModeFlags.Read);
+	public void _OnDecisionChangeTimerTimeout() => DecisionTimer.WaitTime = RNG_Manager.rng.RandfRange(1f, 5f);
 
-		while (!file.EofReached())
-			messages.Add(file.GetLine());
+	public void _OnStunnedTimerTimeout() => CurrentState = StateEnum.Idle;
 
-		file.Close();
-	}
-
-	public string GetRandomMessage()
-	{
-		while (true)
-		{
-			var newMessage = messages[RNG_Manager.rng.RandiRange(0, messages.Count - 1)];
-			if (newMessage != currentMessage)
-			{
-				currentMessage = newMessage;
-				break;
-			}
-		}
-		return currentMessage;
-	}
-
-	public void _OnDecisionChangeTimerTimeout()
-	{
-		DecisionTimer.WaitTime = RNG_Manager.rng.RandfRange(1f, 5f);
-	}
+	public void _OnHealingTimerTimeout() => Life += 1;
 }

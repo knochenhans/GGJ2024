@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://bhsida2o6kpfe"]
+
+[ext_resource type="Texture2D" uid="uid://bpfj8c7ahnt7n" path="res://images/Crate.png" id="1_8o6fn"]
+[ext_resource type="Script" path="res://TextureButton.cs" id="2_bkmbg"]
+[ext_resource type="AudioStream" uid="uid://dlcidgnc5imsp" path="res://sounds/interface/click_pressed.ogg" id="3_b2upj"]
+
+[node name="TextureButton" type="TextureButton"]
+texture_normal = ExtResource("1_8o6fn")
+stretch_mode = 3
+script = ExtResource("2_bkmbg")
+ButtonDownSound = ExtResource("3_b2upj")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
+[connection signal="button_down" from="." to="." method="_OnButtonDown"]

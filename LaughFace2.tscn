@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://b757i1oalvqbv"]
+[gd_scene load_steps=10 format=3 uid="uid://b757i1oalvqbv"]
 
 [ext_resource type="Script" path="res://LaughFace.cs" id="1_wxwiq"]
 [ext_resource type="Texture2D" uid="uid://c15a5iqcxgo5r" path="res://images/laugh2_1.png" id="2_aj8b8"]
 [ext_resource type="Texture2D" uid="uid://fjhov62asd7q" path="res://images/laugh2_2.png" id="3_iksps"]
 [ext_resource type="Texture2D" uid="uid://bdctrb6lnoqdc" path="res://images/laugh2_3.png" id="4_k2b74"]
+[ext_resource type="Texture2D" uid="uid://cgd2cvdlrt4sd" path="res://images/laugh2_4.png" id="5_4s1m1"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_bldlt"]
 animations = [{
@@ -29,6 +30,17 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("4_k2b74")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_4s1m1")
+}],
+"loop": true,
+"name": &"game_over",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("2_aj8b8")
 }],
 "loop": false,
@@ -36,16 +48,84 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="Animation" id="Animation_6px67"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(2, 2)]
+}
+
+[sub_resource type="Animation" id="Animation_bksok"]
+resource_name = "won"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(2.82843, 2.82843),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-1872.56, -1498)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(2.82843, 2.82843),
+"update": 0,
+"values": [Vector2(2, 2), Vector2(24.1972, 24.1972)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_n623j"]
+_data = {
+"RESET": SubResource("Animation_6px67"),
+"won": SubResource("Animation_bksok")
+}
+
 [node name="LaughFace" type="Node2D"]
 script = ExtResource("1_wxwiq")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_bldlt")
-animation = &"blink"
+animation = &"game_over"
 autoplay = "idle"
+frame = 1
+frame_progress = 0.0673802
 centered = false
 
 [node name="Timer" type="Timer" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_n623j")
+}
 
 [connection signal="timeout" from="Timer" to="." method="_OnTimerTimeout"]

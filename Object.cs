@@ -9,8 +9,19 @@ public partial class Object : RigidBody2D
 	[Export]
 	public int Laugh { get; set; } = 1;
 
+	[Export]
+	public float StunTime { get; set; } = 0f;
+
+	[Export]
+	public float LifeTime { get; set; } = 0f;
+
+	[Export]
+	public float SpawningTime { get; set; } = 0f;
+
+
 	Timer SpawningTimer;
-	AnimationPlayer AnimationPlayer { get; set; }
+	Timer LifeTimer;
+	AnimationPlayer AnimationPlayerNode { get; set; }
 	CollisionShape2D CollisionShape { get; set; }
 
 	enum StateEnum
@@ -30,20 +41,20 @@ public partial class Object : RigidBody2D
 			{
 				case StateEnum.Spawning:
 					{
-						AnimationPlayer.Play("Spawning");
+						AnimationPlayerNode.Play("Spawning");
 						SpawningTimer.Start();
 						CollisionShape.Disabled = true;
 						break;
 					}
 				case StateEnum.Idle:
 					{
-						AnimationPlayer.Stop();
+						AnimationPlayerNode.Play("RESET");
 						CollisionShape.Disabled = false;
 						break;
 					}
 				case StateEnum.FadeOut:
 					{
-						AnimationPlayer.Play("FadeOut");
+						AnimationPlayerNode.Play("FadeOut");
 						break;
 					}
 			}
@@ -55,7 +66,10 @@ public partial class Object : RigidBody2D
 	public override void _Ready()
 	{
 		SpawningTimer = GetNode<Timer>("SpawningTimer");
-		AnimationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+		SpawningTimer.WaitTime = SpawningTime;
+		LifeTimer = GetNode<Timer>("LifeTimer");
+		LifeTimer.WaitTime = LifeTime;
+		AnimationPlayerNode = GetNode<AnimationPlayer>("AnimationPlayer");
 		CollisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
 		State = StateEnum.Spawning;
 	}
@@ -66,26 +80,34 @@ public partial class Object : RigidBody2D
 
 		if (bodies.Count > 0)
 		{
-			var animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-			animationPlayer.Play("FadeOut");
+			Touched();
 		}
 	}
 
 	public void _OnAnimationPlayerAnimationFinished(string animName)
 	{
 		if (animName == "FadeOut")
-		{
 			QueueFree();
+	}
+
+	public void _OnSpawningTimerTimeout() => State = StateEnum.Idle;
+
+	public void _OnLifeTimerTimeout() => State = StateEnum.FadeOut;
+
+	public async void Touched()
+	{
+		if (State == StateEnum.Idle)
+		{
+			SetPhysicsProcess(false);
+			ContactMonitor = false;
+			Freeze = true;
+			
+			GetNode<AudioStreamPlayer2D>("TouchSound").Play();
+			AnimationPlayerNode.Play("Touch");
+
+			await ToSignal(AnimationPlayerNode, "animation_finished");
+
+			AnimationPlayerNode.Play("FadeOut");
 		}
-	}
-
-	public void _OnSpawningTimerTimeout()
-	{
-		State = StateEnum.Idle;
-	}
-
-	public void _OnLifeTimerTimeout()
-	{
-		State = StateEnum.FadeOut;
 	}
 }

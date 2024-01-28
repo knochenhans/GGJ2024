@@ -1,7 +1,29 @@
-[gd_scene load_steps=2 format=3 uid="uid://3ix0frjr1u00"]
+[gd_scene load_steps=3 format=3 uid="uid://3ix0frjr1u00"]
 
 [ext_resource type="PackedScene" uid="uid://dj7wd2f1yx3pp" path="res://Object.tscn" id="1_q2c0d"]
+[ext_resource type="AudioStream" uid="uid://c6mvjmncvhae5" path="res://sounds/sign.ogg" id="2_nbeo4"]
 
-[node name="Object" instance=ExtResource("1_q2c0d")]
+[node name="Sign" groups=["Object"] instance=ExtResource("1_q2c0d")]
 mass = 10.0
-Laugh = 20
+Laugh = 10
+LifeTime = 30.0
+SpawningTime = 1.0
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+position = Vector2(0, -16)
+
+[node name="CollisionShape2D" parent="." index="1"]
+position = Vector2(0, -12)
+
+[node name="SpawningTimer" parent="." index="3"]
+wait_time = 1.0
+
+[node name="LifeTimer" parent="." index="4"]
+wait_time = 20.0
+
+[node name="TouchSound" parent="." index="5"]
+stream = ExtResource("2_nbeo4")
+
+[node name="Shadow" parent="." index="6"]
+position = Vector2(-0.75, -9.53674e-07)
+scale = Vector2(0.345238, 0.2)

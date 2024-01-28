@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://qk0rw3gbvld6"]
+[gd_scene load_steps=35 format=3 uid="uid://qk0rw3gbvld6"]
 
 [ext_resource type="Texture2D" uid="uid://b0eu4dgstagwp" path="res://images/craftpix-net-481510-free-townspeople-cyberpunk-pixel-art/1/Idle.png" id="1_5cxej"]
 [ext_resource type="Script" path="res://Character.cs" id="1_dvhxx"]
@@ -7,7 +7,14 @@
 [ext_resource type="AudioStream" uid="uid://72rmsx1e3uhi" path="res://sounds/ouch2.ogg" id="3_okdg6"]
 [ext_resource type="AudioStream" uid="uid://ctbp6rbnmdoby" path="res://sounds/ouch3.ogg" id="4_qn5un"]
 [ext_resource type="AudioStream" uid="uid://urnsu3x36j3" path="res://sounds/die.ogg" id="5_sxdny"]
+[ext_resource type="AudioStream" uid="uid://ikpnm4u2s2i5" path="res://sounds/stunned.ogg" id="6_egqq1"]
 [ext_resource type="Texture2D" uid="uid://5t1pjpjbryl8" path="res://images/shadow.png" id="8_jjyod"]
+[ext_resource type="Texture2D" uid="uid://bx6l6i7grh0tu" path="res://images/stars1.png" id="9_ufkle"]
+[ext_resource type="Texture2D" uid="uid://c00ufoyx72r7s" path="res://images/stars2.png" id="10_60fq4"]
+[ext_resource type="Texture2D" uid="uid://dtrg5oas2fds3" path="res://images/stars3.png" id="11_y1n30"]
+[ext_resource type="Texture2D" uid="uid://diegjjs67gjkt" path="res://images/stars4.png" id="12_vjf56"]
+[ext_resource type="Texture2D" uid="uid://dkeybglsqmyji" path="res://images/stars6.png" id="13_l2cmt"]
+[ext_resource type="Texture2D" uid="uid://crhalc2bbnvoy" path="res://images/stars5.png" id="13_o0hyc"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tg44o"]
 bounce = 0.45
@@ -195,6 +202,37 @@ _data = {
 "RESET": SubResource("Animation_jcq8h")
 }
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_3pkwa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_ufkle")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_60fq4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_y1n30")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_vjf56")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_o0hyc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_l2cmt")
+}],
+"loop": true,
+"name": &"stunned",
+"speed": 5.0
+}]
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xsoap"]
 height = 24.0
 
@@ -205,9 +243,10 @@ lock_rotation = true
 max_contacts_reported = 1
 contact_monitor = true
 script = ExtResource("1_dvhxx")
+damageFactor = 20.0
 OuchSounds = Array[AudioStream]([ExtResource("2_jjjv1"), ExtResource("3_okdg6"), ExtResource("4_qn5un")])
 DieSound = ExtResource("5_sxdny")
-damageFactor = 20.0
+StunnedSound = ExtResource("6_egqq1")
 
 [node name="Shadow" type="Sprite2D" parent="."]
 position = Vector2(-13, 26)
@@ -218,13 +257,19 @@ texture = ExtResource("8_jjyod")
 y_sort_enabled = true
 position = Vector2(-13, 0)
 sprite_frames = SubResource("SpriteFrames_0i6e5")
-animation = &"walk"
+animation = &"idle"
 offset = Vector2(9, 0)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="AnimatedSprite2D"]
 libraries = {
 "": SubResource("AnimationLibrary_d4kpf")
 }
+
+[node name="Stars" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(5, -7)
+sprite_frames = SubResource("SpriteFrames_3pkwa")
+frame_progress = 0.714272
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-13, 13)
@@ -238,7 +283,7 @@ one_shot = true
 visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(1, 13)
+position = Vector2(-13, 13)
 shape = SubResource("CapsuleShape2D_xsoap")
 
 [node name="Sound" type="AudioStreamPlayer2D" parent="."]
@@ -254,7 +299,16 @@ autostart = true
 
 [node name="DecisionChangeTimer" type="Timer" parent="."]
 
-[connection signal="body_shape_entered" from="Area2D" to="." method="_OnArea2DBodyShapeEntered"]
+[node name="StunnedTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[node name="HealingTimer" type="Timer" parent="."]
+wait_time = 2.0
+
+[connection signal="area_entered" from="Area2D" to="." method="_OnArea2DAreaEntered"]
 [connection signal="timeout" from="DecisionTimer" to="." method="_OnDecisionTimerTimeout"]
 [connection signal="timeout" from="BubbleTimer" to="." method="_OnBubbleTimerTimeout"]
 [connection signal="timeout" from="DecisionChangeTimer" to="." method="_OnDecisionChangeTimerTimeout"]
+[connection signal="timeout" from="StunnedTimer" to="." method="_OnStunnedTimerTimeout"]
+[connection signal="timeout" from="HealingTimer" to="." method="_OnHealingTimerTimeout"]

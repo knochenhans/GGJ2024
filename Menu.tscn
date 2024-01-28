@@ -3,9 +3,9 @@
 [ext_resource type="Theme" uid="uid://d3lg7vtet5t6a" path="res://Main.tres" id="1_porsx"]
 [ext_resource type="Script" path="res://Menu.cs" id="1_sy8v0"]
 [ext_resource type="FontFile" uid="uid://c6gf20attc22f" path="res://fonts/OTF/dogicapixelbold.otf" id="3_8dle5"]
-[ext_resource type="PackedScene" uid="uid://b757i1oalvqbv" path="res://LaughFace2.tscn" id="7_0mgem"]
+[ext_resource type="FontFile" uid="uid://d82v3s1nna4g" path="res://fonts/OTF/dogicapixel.otf" id="4_8p1sl"]
+[ext_resource type="FontFile" uid="uid://beayyww71n8yh" path="res://fonts/TTF/dogicapixel.ttf" id="5_038o8"]
 [ext_resource type="AudioStream" uid="uid://cvb2br4hpsd6a" path="res://sounds/intro.ogg" id="7_66x7s"]
-[ext_resource type="PackedScene" uid="uid://c5hphcrfrxmjx" path="res://LaughFace.tscn" id="8_7vjx7"]
 [ext_resource type="PackedScene" uid="uid://b63wx7gvpmawy" path="res://CustomButton.tscn" id="13_mvxh3"]
 
 [node name="Menu" type="Control"]
@@ -39,16 +39,61 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -315.0
-offset_top = -98.0
-offset_right = 315.0
-offset_bottom = -67.0
+offset_left = -354.0
+offset_top = -156.0
+offset_right = 354.0
+offset_bottom = -113.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("3_8dle5")
 theme_override_font_sizes/font_size = 40
-text = "Last Entertainment"
+text = "Final Entertainment"
 horizontal_alignment = 1
+
+[node name="LabelQuote" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -354.0
+offset_top = -90.0
+offset_right = 354.0
+offset_bottom = -47.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_8p1sl")
+theme_override_font_sizes/font_size = 20
+text = "Final Entertainment"
+horizontal_alignment = 1
+
+[node name="LabelInstructions" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -438.0
+offset_top = 234.0
+offset_right = 590.0
+offset_bottom = 391.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/normal_font = ExtResource("5_038o8")
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+text = "Instructions:
+
+
+Get the [color=\"blue\"]laugh meter[/color] to 100% before you’re out of [color=\"red\"]life[/color].
+
+
+Running into walls gets you laughter but hurts!
+
+
+Drag objects to the map that raise the laughter score, but also cost life!"
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -63,6 +108,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_top = 270
+theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer"]
 custom_minimum_size = Vector2(250, 0)
@@ -84,12 +130,6 @@ text = "Options"
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Exit"
-
-[node name="LaughFace" parent="." instance=ExtResource("8_7vjx7")]
-position = Vector2(0, 506)
-
-[node name="LaughFace2" parent="." instance=ExtResource("7_0mgem")]
-position = Vector2(986, 506)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_66x7s")

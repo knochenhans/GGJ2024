@@ -1,13 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://cgqmrvepf51n7"]
+[gd_scene load_steps=6 format=3 uid="uid://cgqmrvepf51n7"]
 
 [ext_resource type="PackedScene" uid="uid://dj7wd2f1yx3pp" path="res://Object.tscn" id="1_s2qag"]
-[ext_resource type="Texture2D" uid="uid://bpfj8c7ahnt7n" path="res://images/Crate.png" id="2_raptx"]
+[ext_resource type="Texture2D" uid="uid://dehkw8cqlyfbm" path="res://images/Crate_small.png" id="2_ipuoq"]
+[ext_resource type="AudioStream" uid="uid://b67n1myhgowde" path="res://sounds/crate.ogg" id="3_8uobo"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ocx8y"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_raptx")
+"texture": ExtResource("2_ipuoq")
 }],
 "loop": true,
 "name": &"Idle",
@@ -15,17 +16,33 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sheui"]
-size = Vector2(28, 8)
+size = Vector2(38, 20)
 
-[node name="Object" instance=ExtResource("1_s2qag")]
+[node name="Crate" groups=["Object"] instance=ExtResource("1_s2qag")]
+Damage = 20
+Laugh = 30
+StunTime = 2.0
+LifeTime = 10.0
+SpawningTime = 5.0
 
 [node name="AnimatedSprite2D" parent="." index="0"]
+position = Vector2(0, -3)
 sprite_frames = SubResource("SpriteFrames_ocx8y")
 
 [node name="CollisionShape2D" parent="." index="1"]
 y_sort_enabled = true
-position = Vector2(0, 12)
+position = Vector2(0, 8)
 shape = SubResource("RectangleShape2D_sheui")
 
+[node name="SpawningTimer" parent="." index="3"]
+wait_time = 5.0
+
 [node name="LifeTimer" parent="." index="4"]
-wait_time = 20.0
+wait_time = 10.0
+
+[node name="TouchSound" parent="." index="5"]
+stream = ExtResource("3_8uobo")
+
+[node name="Shadow" parent="." index="6"]
+position = Vector2(0.25, 12)
+scale = Vector2(0.75, 0.3)

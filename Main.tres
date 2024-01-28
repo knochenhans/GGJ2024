@@ -1,8 +1,10 @@
-[gd_resource type="Theme" load_steps=5 format=3 uid="uid://d3lg7vtet5t6a"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://d3lg7vtet5t6a"]
 
 [ext_resource type="FontFile" uid="uid://d1qlac6vgr01m" path="res://fonts/OTF/dogica.otf" id="1_m5ypl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ia1tu"]
+content_margin_top = 15.0
+content_margin_bottom = 15.0
 bg_color = Color(0, 0, 0, 1)
 border_width_left = 4
 border_width_top = 4
@@ -13,10 +15,10 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-expand_margin_top = 10.0
-expand_margin_bottom = 10.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3po7c"]
+content_margin_top = 10.0
+content_margin_bottom = 10.0
 bg_color = Color(0, 0, 0, 1)
 border_width_left = 4
 border_width_top = 4
@@ -27,10 +29,36 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-expand_margin_top = 10.0
-expand_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tpegj"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lwv2v"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ln80d"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_detail = 6
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
 
 [resource]
 default_font = ExtResource("1_m5ypl")
@@ -40,4 +68,6 @@ Button/styles/focus = SubResource("StyleBoxFlat_ia1tu")
 Button/styles/hover = SubResource("StyleBoxFlat_3po7c")
 Button/styles/normal = SubResource("StyleBoxFlat_ia1tu")
 Button/styles/pressed = SubResource("StyleBoxFlat_ia1tu")
+Label/styles/normal = SubResource("StyleBoxFlat_tpegj")
 PanelContainer/styles/panel = SubResource("StyleBoxEmpty_lwv2v")
+ProgressBar/styles/background = SubResource("StyleBoxFlat_ln80d")

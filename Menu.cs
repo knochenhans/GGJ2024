@@ -8,6 +8,8 @@ public partial class Menu : Control
 	public override void _Ready()
 	{
 		SceneManager = GetNode<SceneManager>("/root/SceneManager");
+
+		GetNode<Label>("LabelQuote").Text = "“" + MessageManager.GetRandomMessage() + "”";
 	}
 
 	public void _OnStartButtonPressed()

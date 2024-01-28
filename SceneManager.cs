@@ -1,6 +1,36 @@
 using System.Linq;
 using Godot;
 
+public static class MessageManager
+{
+	static readonly Godot.Collections.Array<string> messages = new();
+	static string currentMessage = "";
+
+	public static void LoadMessages()
+	{
+		using var file = FileAccess.Open("res://messages.txt", FileAccess.ModeFlags.Read);
+
+		while (!file.EofReached())
+			messages.Add(file.GetLine());
+
+		file.Close();
+	}
+
+	public static string GetRandomMessage()
+	{
+		while (true)
+		{
+			var newMessage = messages[RNG_Manager.rng.RandiRange(0, messages.Count - 1)];
+			if (newMessage != currentMessage)
+			{
+				currentMessage = newMessage;
+				break;
+			}
+		}
+		return currentMessage;
+	}
+}
+
 public static class RNG_Manager
 {
 	public static RandomNumberGenerator rng = null;
@@ -20,6 +50,7 @@ public partial class SceneManager : Node
 		base._Ready();
 
 		RNG_Manager.rng = new RandomNumberGenerator();
+		MessageManager.LoadMessages();
 
 		Scenes.Add("Menu", "res://Menu.tscn");
 		Scenes.Add("Options", "res://Options.tscn");

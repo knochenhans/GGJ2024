@@ -1,0 +1,88 @@
+[gd_scene load_steps=16 format=3 uid="uid://ey7dhpk3lfcc"]
+
+[ext_resource type="Script" path="res://Healing.cs" id="1_2dits"]
+[ext_resource type="Texture2D" uid="uid://s1nv831wnv2w" path="res://images/healing1.png" id="2_j240e"]
+[ext_resource type="Texture2D" uid="uid://bxhhpptpn3d6j" path="res://images/healing2.png" id="3_ou3ar"]
+[ext_resource type="Texture2D" uid="uid://cyei48qmpc6yp" path="res://images/healing3.png" id="4_s7isq"]
+[ext_resource type="Texture2D" uid="uid://o3tahelaro36" path="res://images/healing4.png" id="5_qw6gb"]
+[ext_resource type="Texture2D" uid="uid://ctgkyb5v7j3e0" path="res://images/healing5.png" id="6_m2dv4"]
+[ext_resource type="Texture2D" uid="uid://7tptjgnu2irg" path="res://images/healing6.png" id="7_ks5l6"]
+[ext_resource type="Texture2D" uid="uid://b7ql5vuu4ke7j" path="res://images/healing7.png" id="8_fpp3d"]
+[ext_resource type="Texture2D" uid="uid://4wqm11rbbi8o" path="res://images/healing8.png" id="9_0idsa"]
+[ext_resource type="Texture2D" uid="uid://c1h0v4tp2inni" path="res://images/healing9.png" id="10_7qcp3"]
+[ext_resource type="Texture2D" uid="uid://cqa2jdsoqg3t7" path="res://images/healing10.png" id="11_j3qkd"]
+[ext_resource type="AudioStream" uid="uid://60i81tti85w5" path="res://sounds/healing.ogg" id="12_ekytv"]
+[ext_resource type="Texture2D" uid="uid://5t1pjpjbryl8" path="res://images/shadow.png" id="13_ilqvh"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pjjic"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_j240e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ou3ar")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_s7isq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_qw6gb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_m2dv4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_ks5l6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_fpp3d")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_0idsa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_7qcp3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_j3qkd")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jgre8"]
+size = Vector2(12, 15)
+
+[node name="Healing" type="Area2D"]
+y_sort_enabled = true
+scale = Vector2(2, 2)
+script = ExtResource("1_2dits")
+LifeTime = 10.0
+Life = 20
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 1
+sprite_frames = SubResource("SpriteFrames_pjjic")
+animation = &"Idle"
+autoplay = "Idle"
+frame_progress = 0.122524
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("RectangleShape2D_jgre8")
+
+[node name="LifeTimer" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
+[node name="TouchSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_ekytv")
+
+[node name="Shadow" type="Sprite2D" parent="."]
+position = Vector2(0.25, 9)
+scale = Vector2(0.369048, 0.2)
+texture = ExtResource("13_ilqvh")
+
+[connection signal="timeout" from="LifeTimer" to="." method="_OnLifeTimerTimeout"]

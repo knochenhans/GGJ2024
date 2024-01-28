@@ -57,7 +57,7 @@ _data = {
 
 [node name="Bubble" type="PanelContainer"]
 modulate = Color(1, 1, 1, 0)
-top_level = true
+z_index = 100
 anchors_preset = -1
 anchor_right = 0.094
 anchor_bottom = 0.08
@@ -70,7 +70,7 @@ size_flags_vertical = 4
 theme = ExtResource("1_yug2x")
 script = ExtResource("2_xap5x")
 lifeTime = 3.0
-Distance = Vector2(0, -90)
+Distance = Vector2(0, -120)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

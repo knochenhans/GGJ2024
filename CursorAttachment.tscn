@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dv0ylw0xfjyb5"]
+
+[ext_resource type="Script" path="res://CursorAttachment.cs" id="1_w3xsg"]
+[ext_resource type="Texture2D" uid="uid://cto6aoks8h1hi" path="res://images/circle.png" id="2_b7uot"]
+
+[node name="CursorAttachment" type="Sprite2D"]
+z_index = 100
+script = ExtResource("1_w3xsg")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_b7uot")

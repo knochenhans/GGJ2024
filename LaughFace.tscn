@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://c5hphcrfrxmjx"]
+[gd_scene load_steps=9 format=3 uid="uid://c5hphcrfrxmjx"]
 
 [ext_resource type="Script" path="res://LaughFace.cs" id="1_k4xm0"]
 [ext_resource type="Texture2D" uid="uid://djxm7lafnmabl" path="res://images/laugh1_1.png" id="1_wlsur"]
 [ext_resource type="Texture2D" uid="uid://dmwss6tqw3rwh" path="res://images/laugh1_2.png" id="2_8yyuj"]
+[ext_resource type="Texture2D" uid="uid://bthsaora0sehm" path="res://images/laugh1_3.png" id="4_pfbjk"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_bldlt"]
 animations = [{
@@ -20,11 +21,80 @@ animations = [{
 "name": &"blink",
 "speed": 5.0
 }, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_pfbjk")
+}],
+"loop": true,
+"name": &"game_over",
+"speed": 5.0
+}, {
 "frames": [],
 "loop": false,
 "name": &"idle",
 "speed": 5.0
 }]
+
+[sub_resource type="Animation" id="Animation_o36gx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(2, 2)]
+}
+
+[sub_resource type="Animation" id="Animation_xcayl"]
+resource_name = "won"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(2.82843, 2.82843),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -1498)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(2.82843, 2.82843),
+"update": 0,
+"values": [Vector2(2, 2), Vector2(24.1972, 24.1972)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2s7j3"]
+_data = {
+"RESET": SubResource("Animation_o36gx"),
+"won": SubResource("Animation_xcayl")
+}
 
 [node name="LaughFace" type="Node2D"]
 script = ExtResource("1_k4xm0")
@@ -37,5 +107,10 @@ autoplay = "idle"
 centered = false
 
 [node name="Timer" type="Timer" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_2s7j3")
+}
 
 [connection signal="timeout" from="Timer" to="." method="_OnTimerTimeout"]
