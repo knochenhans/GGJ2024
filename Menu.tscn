@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bom6v5ank5q4b"]
+[gd_scene load_steps=9 format=3 uid="uid://bom6v5ank5q4b"]
 
 [ext_resource type="Theme" uid="uid://d3lg7vtet5t6a" path="res://Main.tres" id="1_porsx"]
 [ext_resource type="Script" path="res://Menu.cs" id="1_sy8v0"]
@@ -6,6 +6,7 @@
 [ext_resource type="FontFile" uid="uid://d82v3s1nna4g" path="res://fonts/OTF/dogicapixel.otf" id="4_8p1sl"]
 [ext_resource type="FontFile" uid="uid://beayyww71n8yh" path="res://fonts/TTF/dogicapixel.ttf" id="5_038o8"]
 [ext_resource type="AudioStream" uid="uid://cvb2br4hpsd6a" path="res://sounds/intro.ogg" id="7_66x7s"]
+[ext_resource type="Texture2D" uid="uid://ce2ad4da8f5vk" path="res://images/logo_cut.png" id="8_h778p"]
 [ext_resource type="PackedScene" uid="uid://b63wx7gvpmawy" path="res://CustomButton.tscn" id="13_mvxh3"]
 
 [node name="Menu" type="Control"]
@@ -78,7 +79,7 @@ anchor_bottom = 0.5
 offset_left = -438.0
 offset_top = 234.0
 offset_right = 590.0
-offset_bottom = 391.0
+offset_bottom = 472.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/normal_font = ExtResource("5_038o8")
@@ -93,7 +94,11 @@ Get the [color=\"blue\"]laugh meter[/color] to 100% before you’re out of [colo
 Running into walls gets you laughter but hurts!
 
 
-Drag objects to the map that raise the laughter score, but also cost life!"
+Drag objects to the map that raise the laughter score, but also cost life!
+
+
+
+https://struktstudios.itch.io/"
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -134,6 +139,11 @@ text = "Exit"
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_66x7s")
 autoplay = true
+
+[node name="LogoCut" type="Sprite2D" parent="."]
+position = Vector2(110, 970)
+scale = Vector2(0.182609, 0.182609)
+texture = ExtResource("8_h778p")
 
 [connection signal="pressed" from="CenterContainer/MarginContainer/VBoxContainer/ButtonStart" to="." method="_OnStartButtonPressed"]
 [connection signal="pressed" from="CenterContainer/MarginContainer/VBoxContainer/ButtonOptions" to="." method="_OnOptionsButtonPressed"]
