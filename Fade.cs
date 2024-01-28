@@ -10,6 +10,14 @@ public partial class Fade : ColorRect
 		base._Ready();
 
 		AnimationPlayerNode = GetNode<AnimationPlayer>("AnimationPlayer");
+
+		var _interface = GetParent().GetNodeOrNull<Interface>("Game/Interface");
+
+		if (_interface != null)
+		{
+			Position = GetViewportRect().Position - _interface.Position;
+			Size = GetViewportRect().Size;
+		}
 	}
 
 	public void FadeIn(float duration)

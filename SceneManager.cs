@@ -50,6 +50,7 @@ public partial class SceneManager : Node
 		base._Ready();
 
 		RNG_Manager.rng = new RandomNumberGenerator();
+		RNG_Manager.rng.Randomize();
 		MessageManager.LoadMessages();
 
 		Scenes.Add("Menu", "res://Menu.tscn");

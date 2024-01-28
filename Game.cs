@@ -65,7 +65,8 @@ public partial class Game : Scene
     int _laugh = 0;
     public int Laugh
     {
-        get => _laugh; set
+        get => _laugh;
+        set
         {
             if (value < 0)
                 value = 0;
@@ -167,7 +168,7 @@ public partial class Game : Scene
 
         GD.Print($"Laugh: {laugh}");
 
-        if (laugh == 100)
+        if (Laugh >= 100)
             GameState = GameStateEnum.Won;
     }
 
@@ -252,6 +253,7 @@ public partial class Game : Scene
                 {
                     if (eventKey.Keycode == Key.Escape)
                     {
+                        GetNode<SceneManager>("/root/SceneManager").SwitchScene("Menu");
                         if (GameState == GameStateEnum.Playing)
                             GameState = GameStateEnum.Paused;
                         else if (GameState == GameStateEnum.Paused)
@@ -276,7 +278,7 @@ public partial class Game : Scene
                 {
                     if (eventKey.Keycode == Key.Escape)
                         GetTree().Quit();
-                        // GetNode<SceneManager>("/root/SceneManager").SwitchScene("res://MainMenu.tscn");
+                    // GetNode<SceneManager>("/root/SceneManager").SwitchScene("res://MainMenu.tscn");
                 }
             }
         }
